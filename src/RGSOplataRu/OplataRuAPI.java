@@ -31,7 +31,7 @@ public class OplataRuAPI {
     // mandatory fields
     private static String agentId;
     private static String payMethod;
-    private static SignatureTool singTool;
+    private static SignatureTool signTool;
     
     private static void init() throws Exception{
         
@@ -58,13 +58,16 @@ public class OplataRuAPI {
             agentId = prop.getProperty("agentId");
             payMethod = prop.getProperty("payMethod");
             
-            singTool = new SignatureTool("SHA1withRSA");
+            signTool = new SignatureTool("SHA1withRSA");
             prop.load(OplataRuAPI.class.getResourceAsStream("/RGSOplataRu/OplataCrypto.properties"));
-            singTool.initKeysWithAndFile(  prop.getProperty("keyStorePath"), 
+            signTool.initKeysWithKeystoreAndFile(  prop.getProperty("keyStorePath"), 
                                 prop.getProperty("keyStorePasswd"),
                                 prop.getProperty("DSAlias"),
                                 prop.getProperty("privKeyPasswd"),
                                 prop.getProperty("pubKeyPath"));
+//            signTool.initKeysWithFiles(prop.getProperty("privKeyPath"), prop.getProperty("pubKeyPath"));
+            System.out.println(signTool.showKeys());
+
             
             
         }
@@ -82,9 +85,12 @@ public class OplataRuAPI {
                     "&" + "pay_method=" + payMethod + 
                     "&" + payParams;
                 ;
-        String sign = singTool.sign(request);
-        request = request + "&" + "sign=" + sign;
         System.out.println("request= "+request);
+        String sign = signTool.sign(request);
+        System.out.println("sign= "+sign);
+        
+        request = request + "&" + "sign=" + sign.toLowerCase();
+        System.out.println(" final request= "+request);
         result = Connection.POST_Request("/", request);
         System.out.println("result= "+result);
         return result;

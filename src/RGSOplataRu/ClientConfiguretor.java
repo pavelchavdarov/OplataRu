@@ -24,6 +24,7 @@ import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -83,13 +84,13 @@ public class ClientConfiguretor implements ClientConfigurator{
         KeyStore keyStore = null;
         KeyStore trustStore = null;
         if (keyStoreResouce != null && keyStorePassword != null)
-            keyStore = TrustStoreLoader.loadKeyStore(keyStoreResouce,keyStorePassword);
+            keyStore = TrustStoreLoader.loadKeyStorePFX(keyStoreResouce,keyStorePassword);
         if (trustStoreResouce != null && trustStorePassword != null)
             trustStore = TrustStoreLoader.loadTrustStore(trustStoreResouce,trustStorePassword);
 
         SSLContext context = TrustStoreLoader.getTLSContext(keyStore, keyStorePassword, trustStore);
-
-        SSLConnectionSocketFactory SSLsf = new SSLConnectionSocketFactory(context, new DefaultHostnameVerifier());
+//        SSLConnectionSocketFactory SSLsf = new SSLConnectionSocketFactory(context, new DefaultHostnameVerifier());
+        SSLConnectionSocketFactory SSLsf = new SSLConnectionSocketFactory(context, NoopHostnameVerifier.INSTANCE);
 
         Registry<ConnectionSocketFactory> registry  = RegistryBuilder.<ConnectionSocketFactory>create()
                 .register("https", SSLsf)
@@ -100,6 +101,8 @@ public class ClientConfiguretor implements ClientConfigurator{
 
         return HttpClientBuilder.create()
                 .setConnectionManager(ccm)
+                // !!! FOR TEST ONLY
+                //.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
                 .build();
     }
 

@@ -8,12 +8,15 @@ package RGSOplataRu;
 import RGSCommonUtils.UniversalConnectionInterfaceImp;
 import static RGSCommonUtils.oraDAO.Stream2Clob;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.sql.Clob;
 import java.sql.SQLException;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.entity.EntityBuilder;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
 
 /**
  *
@@ -30,11 +33,22 @@ public class OplataConnection extends UniversalConnectionInterfaceImp{
         if (p_objects.length > 0 ) {
             HttpEntity reqEntity =
                     EntityBuilder.create().setText((String) p_objects[0])
+                    .setContentType(ContentType.create(request.getFirstHeader("Content-Type").getValue(), 
+                            Charset.forName(request.getFirstHeader("charset").getValue())))
                     .build();
 
             request.setEntity(reqEntity);
-            System.out.println("target= "+target);
-            System.out.println("httpClient= "+httpClient);
+//            System.out.println("target= "+target);
+//            System.out.println("httpClient= "+httpClient);
+//            System.out.println("request= "+request.getFirstHeader("charset").getValue());
+//            System.out.println("request= "+request.getFirstHeader("Content-Type").getValue());
+//            System.out.println("request entity= " + request.getEntity());
+            
+//            System.out.println("request headers:");
+//            for( Header h : request.getAllHeaders()){
+//                
+//                System.out.println(h.getName() + ":" + h.getValue());
+//            }
             CloseableHttpResponse responce = httpClient.execute(target, request);
             result = responceToString(responce);
         }

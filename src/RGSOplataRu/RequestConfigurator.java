@@ -43,8 +43,8 @@ public class RequestConfigurator implements RGSCommonUtils.RequestConfigurator {
         String urlProxy = prop.getProperty("urlProxy");
         int portProxy = Integer.valueOf(prop.getProperty("portProxy")).intValue();
         String schemaProxy = prop.getProperty("schemaProxy");
-        
-        proxy = new HttpHost(urlProxy, portProxy, schemaProxy);
+        // for test only
+        proxy = null;//new HttpHost(urlProxy, portProxy, schemaProxy);
     }
 
     

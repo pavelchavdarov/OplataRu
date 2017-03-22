@@ -47,7 +47,7 @@ public class ClientConfiguretorTest {
      * Test of ConfigureSocketLayer method, of class ClientConfiguretor.
      */
     @Test
-    public void testConfigureSocketLayer() {
+    public void testConfigureSocketLayer() throws Exception {
         System.out.println("ConfigureSocketLayer");
         ClientConfiguretor instance = null;
         CloseableHttpClient expResult = null;
